@@ -11,25 +11,27 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { IsPublic } from 'src/common/decorators/auth-guard.decorator';
 import { CreateUserRequestDTO } from '../dtos/index';
 import { User } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
 
-@ApiTags('users')
+@ApiTags('user')
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @IsPublic()
   @Get('find-all')
   async findAll(): Promise<User[]> {
     const users = await this.userService.findAll();
     return users.map((user) => new User(user));
   }
 
-  @Post('create')
+  @Post()
   async save(@Body() payload: CreateUserRequestDTO): Promise<User> {
-    if (await this.userService.exists(payload.email)) {
+    if (await this.userService.exists({ email: payload.email })) {
       throw new ConflictException(
         `User with email ${payload.email} already exists`,
       );
@@ -39,13 +41,16 @@ export class UserController {
     return new User(user);
   }
 
+  @IsPublic()
   @Get(':id')
   async get(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    const user = await this.userService.get(id);
+    const exists = await this.userService.exists({ id });
 
-    if (!user) {
+    if (!exists) {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
+
+    const user = await this.userService.get(id);
 
     return new User(user);
   }

@@ -1,15 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/infra/database/prisma.service';
+import { ExistsUserDTO } from '../dtos/exists-user.dto';
 import { CreateUserRequestDTO } from '../dtos/index';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private userRepository: UserRepository,
-    private prismaService: PrismaService,
-  ) {}
+  constructor(private userRepository: UserRepository) {}
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.findAll();
@@ -23,12 +20,13 @@ export class UserService {
     return await this.userRepository.save(payload);
   }
 
-  async exists(email: string): Promise<boolean> {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
-    });
+  async exists(payload: ExistsUserDTO): Promise<boolean> {
+    if (payload.id) {
+      const user = await this.userRepository.get(payload.id);
+      return !!user;
+    }
+
+    const user = await this.userRepository.getByEmail(payload.email);
     return !!user;
   }
 }
