@@ -14,9 +14,12 @@ export class UserAuthController {
   @IsPublic()
   @Post()
   async authenticate(@Body() payload: AuthUserRequestDTO) {
-    if (!(await this.userService.exists({ email: payload.email }))) {
-      throw new NotFoundException(`User with email ${payload.email} not found`);
-    }
+    const user = await this.userService.exists({ email: payload.email });
+
+    if (!user)
+      throw new NotFoundException(
+        `User with email ${payload.email} does not exist`,
+      );
 
     return await this.userAuthService.authenticate(payload);
   }

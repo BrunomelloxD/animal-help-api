@@ -27,7 +27,9 @@ export class UserAuthService {
       updated_at: user.updated_at,
       deleted_at: user.deleted_at,
     };
+
     const acessToken = await this.jwtService.signAsync(payload);
+
     const response = {
       acessToken,
       user: {
