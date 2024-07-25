@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   ConflictException,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -22,14 +23,15 @@ import { UserService } from '../services/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @IsPublic()
   @Get('find-all')
+  @IsPublic()
   async findAll(): Promise<User[]> {
     const users = await this.userService.findAll();
     return users.map((user) => new User(user));
   }
 
   @Post()
+  @IsPublic()
   async save(@Body() payload: CreateUserRequestDTO): Promise<User> {
     if (await this.userService.exists({ email: payload.email })) {
       throw new ConflictException(
@@ -41,8 +43,8 @@ export class UserController {
     return new User(user);
   }
 
-  @IsPublic()
   @Get(':id')
+  @IsPublic()
   async get(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     const exists = await this.userService.exists({ id });
 
@@ -53,5 +55,17 @@ export class UserController {
     const user = await this.userService.get(id);
 
     return new User(user);
+  }
+
+  @Delete(':id')
+  @IsPublic()
+  async delete(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    const exists = await this.userService.exists({ id });
+
+    if (!exists) {
+      throw new NotFoundException(`User with id ${id} does not exist`);
+    }
+
+    await this.userService.softDelete(id);
   }
 }

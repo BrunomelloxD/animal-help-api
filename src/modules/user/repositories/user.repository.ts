@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { security } from '../../../config/env';
-import { PrismaService } from '../../../infra/database/prisma.service';
+import { PrismaService } from '../../database/services/prisma.service';
 import { CreateUserRequestDTO } from '../dtos/index';
 import { User } from '../entities/user.entity';
 
@@ -21,7 +21,7 @@ export class UserRepository {
   }
 
   async get(id: string): Promise<User> {
-    return await this.prismaService.user.findUnique({
+    return await this.prismaService.client.user.findUnique({
       where: {
         id,
       },
