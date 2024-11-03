@@ -3,16 +3,16 @@ import * as bcrypt from 'bcrypt';
 import { security } from '../../../config/env';
 import { PrismaService } from '../../database/services/prisma.service';
 import { CreateUserRequestDTO } from '../dtos/index';
-import { User } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class UserClientRepository {
   constructor(private prismaService: PrismaService) {}
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return await this.prismaService.client.user.findMany();
   }
 
-  async getByEmail(email: string): Promise<User> {
+  async getByEmail(email: string): Promise<UserEntity> {
     return await this.prismaService.client.user.findUnique({
       where: {
         email,
@@ -20,7 +20,7 @@ export class UserClientRepository {
     });
   }
 
-  async get(id: string): Promise<User> {
+  async get(id: string): Promise<UserEntity> {
     return await this.prismaService.client.user.findUnique({
       where: {
         id,
@@ -28,7 +28,7 @@ export class UserClientRepository {
     });
   }
 
-  async save(payload: CreateUserRequestDTO): Promise<User> {
+  async save(payload: CreateUserRequestDTO): Promise<UserEntity> {
     payload.password = await bcrypt.hash(
       payload.password,
       security.bcrypt.saltOrRounds,

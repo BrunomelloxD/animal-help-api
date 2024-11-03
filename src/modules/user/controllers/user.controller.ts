@@ -16,9 +16,8 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/common/decorators/auth-guard.decorator';
 import { CreateUserRequestDTO } from '../dtos/index';
-import { User } from '../entities/user.entity';
-import { UserClientService } from '../services';
-import { UserService } from '../services/user.service';
+import { UserEntity } from '../entities/user.entity';
+import { UserClientService, UserService } from '../services/index';
 
 @ApiTags('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -31,22 +30,24 @@ export class UserController {
 
   @Get('find-all')
   @IsPublic()
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     const users = await this.userClientService.findAll();
-    return users.map((user) => new User(user));
+
+    if (!users.length) throw new NotFoundException('Users not found');
+
+    return users.map((user) => new UserEntity(user));
   }
 
   @Post()
   @IsPublic()
-  async save(@Body() payload: CreateUserRequestDTO): Promise<User> {
-    const user = await this.userClientService.exists({ email: payload.email });
-    if (!user)
+  async save(@Body() payload: CreateUserRequestDTO): Promise<UserEntity> {
+    if (await this.userClientService.exists({ email: payload.email }))
       throw new ConflictException(
         `User with email ${payload.email} already exists`,
       );
 
     const response = await this.userClientService.save(payload);
-    return new User(response);
+    return new UserEntity(response);
   }
 
   @Get(':id')
@@ -56,12 +57,11 @@ export class UserController {
 
     if (!user) throw new NotFoundException(`User with id ${id} does not exist`);
 
-    return new User(user);
+    return new UserEntity(user);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @IsPublic()
   async softDelete(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
@@ -74,7 +74,6 @@ export class UserController {
   }
 
   @Post(':id/restore')
-  @IsPublic()
   @HttpCode(HttpStatus.NO_CONTENT)
   async restore(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     const user = await this.userService.exists({ id });

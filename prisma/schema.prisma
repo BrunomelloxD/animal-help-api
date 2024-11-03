@@ -15,13 +15,64 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  email      String    @unique
-  name       String
-  password   String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+  id             String    @id @default(uuid())
+  email          String    @unique
+  email_verified Boolean   @default(false)
+  name           String
+  password       String
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  deleted_at     DateTime?
+
+  reset_token ResetToken[]
+  ong Ong[]
 
   @@map("users")
+}
+
+model ResetToken {
+  id         String   @id @default(uuid())
+  token      String   @unique
+  user_id    String
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("reset_tokens")
+}
+
+model Ong {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  user_id     String
+
+  user User @relation(fields: [user_id], references: [id])
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  deleted_at  DateTime?
+
+  @@map("ongs")
+}
+
+model City {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  uf_id Int
+
+  uf Uf @relation(fields: [uf_id], references: [id])
+
+  @@map("cities")
+}
+
+model Uf {
+  id   Int    @id @default(autoincrement())
+  name String
+  uf   String @unique
+
+  city City[]
+
+  @@map("ufs")
 }

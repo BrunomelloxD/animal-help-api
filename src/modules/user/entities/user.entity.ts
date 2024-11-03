@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 
-export class User {
+export class UserEntity {
   id: string;
   name: string;
   email: string;
@@ -12,7 +12,7 @@ export class User {
   updated_at: Date;
   deleted_at: Date;
 
-  constructor(partial: Partial<User>) {
+  constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
   }
 }

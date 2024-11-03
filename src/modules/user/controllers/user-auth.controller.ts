@@ -1,19 +1,29 @@
-import { Body, Controller, NotFoundException, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  NotFoundException,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { IsPublic } from 'src/common/decorators/auth-guard.decorator';
 import { AuthUserRequestDTO } from '../dtos/index';
 import { UserAuthService } from '../services/user-auth.service';
 import { UserService } from '../services/user.service';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('user/auth')
+@ApiTags('User Auth')
+@Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserAuthController {
   constructor(
     private userService: UserService,
     private userAuthService: UserAuthService,
   ) {}
 
+  @Post('auth')
   @IsPublic()
-  @Post()
-  async authenticate(@Body() payload: AuthUserRequestDTO) {
+  async auth(@Body() payload: AuthUserRequestDTO) {
     const user = await this.userService.exists({ email: payload.email });
 
     if (!user)

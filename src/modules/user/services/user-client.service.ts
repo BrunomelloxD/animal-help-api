@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/database/services/prisma.service';
 import { ExistsUserDTO } from '../dtos/exists-user.dto';
 import { CreateUserRequestDTO } from '../dtos/index';
-import { User } from '../entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 import { UserClientRepository } from '../repositories/index';
 
 @Injectable()
@@ -12,21 +12,21 @@ export class UserClientService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return await this.userClientRepository.findAll();
   }
 
-  async get(id: string): Promise<User> {
+  async get(id: string): Promise<UserEntity> {
     return await this.userClientRepository.get(id);
   }
 
-  async softDelete(id: string): Promise<User> {
+  async softDelete(id: string): Promise<UserEntity> {
     return this.prismaService.client.user.delete({
       id: id,
     });
   }
 
-  async save(payload: CreateUserRequestDTO): Promise<User> {
+  async save(payload: CreateUserRequestDTO): Promise<UserEntity> {
     return await this.userClientRepository.save(payload);
   }
 
