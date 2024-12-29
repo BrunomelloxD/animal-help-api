@@ -54,7 +54,7 @@ export class OngController {
   async softDelete(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<OngEntity> {
-    if (!(await this.ongClientService.exists({ id })))
+    if (!(await this.ongClientService.exists(id)))
       throw new NotFoundException(`Ong with id ${id} does not exist`);
 
     return await this.ongClientService.softDelete(id);
@@ -63,7 +63,7 @@ export class OngController {
   @Post(':id/restore')
   @HttpCode(HttpStatus.NO_CONTENT)
   async restore(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    if (!(await this.ongService.exists({ id })))
+    if (!(await this.ongService.exists(id)))
       throw new NotFoundException(`Ong with id ${id} does not exist`);
 
     return await this.ongService.restore(id);
@@ -74,7 +74,7 @@ export class OngController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() payload: UpdateOngRequestDTO,
   ) {
-    if (!(await this.ongClientService.exists({ id })))
+    if (!(await this.ongClientService.exists(id)))
       throw new NotFoundException(`Ong with id ${id} does not exist`);
 
     return await this.ongClientService.update(id, payload);

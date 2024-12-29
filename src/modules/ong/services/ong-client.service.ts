@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOngRequestDTO, ExistsOngDTO } from '../dtos';
+import { CreateOngRequestDTO } from '../dtos';
 import { OngClientRepository } from '../repositories/index';
 import { OngEntity } from '../entities/ong.entity';
 import { UpdateOngRequestDTO } from '../dtos/update.ong-request.dto';
@@ -12,8 +12,8 @@ export class OngClientService {
     return await this.ongClientRepository.softDelete(id);
   }
 
-  async exists(payload: ExistsOngDTO): Promise<boolean> {
-    return await this.ongClientRepository.get(payload);
+  async exists(id: string): Promise<boolean> {
+    return await this.ongClientRepository.get(id);
   }
 
   async findAll(): Promise<OngEntity[]> {

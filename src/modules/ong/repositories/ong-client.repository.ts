@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/database/services/prisma.service';
-import { CreateOngRequestDTO, ExistsOngDTO } from '../dtos';
+import { CreateOngRequestDTO } from '../dtos';
 import { OngEntity } from '../entities/ong.entity';
 import { UpdateOngRequestDTO } from '../dtos/update.ong-request.dto';
 
@@ -30,10 +30,10 @@ export class OngClientRepository {
     });
   }
 
-  async get(payload: ExistsOngDTO): Promise<boolean> {
+  async get(id: string): Promise<boolean> {
     const ong = await this.prismaService.client.ong.findFirst({
       where: {
-        id: payload.id,
+        id,
       },
     });
 
