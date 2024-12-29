@@ -9,7 +9,6 @@ import {
 } from './services/index';
 
 @Module({
-  imports: [],
   controllers: [UserController, UserAuthController],
   providers: [
     UserService,

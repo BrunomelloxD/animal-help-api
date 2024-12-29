@@ -4,6 +4,7 @@ import { ExistsUserDTO } from '../dtos/exists-user.dto';
 import { CreateUserRequestDTO } from '../dtos/index';
 import { UserEntity } from '../entities/user.entity';
 import { UserClientRepository } from '../repositories/index';
+import { UpdateUserRequestDTO } from '../dtos/update-user-request.dto';
 
 @Injectable()
 export class UserClientService {
@@ -11,6 +12,10 @@ export class UserClientService {
     private readonly userClientRepository: UserClientRepository,
     private readonly prismaService: PrismaService,
   ) {}
+
+  async update(id: string, payload: UpdateUserRequestDTO) {
+    return await this.userClientRepository.update(id, payload);
+  }
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userClientRepository.findAll();

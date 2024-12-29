@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { IsPublic } from 'src/common/decorators/auth-guard.decorator';
 import { CreateUserRequestDTO } from '../dtos/index';
 import { UserEntity } from '../entities/user.entity';
 import { UserClientService, UserService } from '../services/index';
+import { UpdateUserRequestDTO } from '../dtos/update-user-request.dto';
 
 @ApiTags('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -81,5 +83,16 @@ export class UserController {
     if (!user) throw new NotFoundException(`User with id ${id} does not exist`);
 
     await this.userService.restore(id);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() payload: UpdateUserRequestDTO,
+  ) {
+    if (!(await this.userClientService.exists({ id })))
+      throw new NotFoundException(`User with id ${id} does not exist`);
+
+    return await this.userClientService.update(id, payload);
   }
 }

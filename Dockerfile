@@ -8,7 +8,7 @@ COPY --chown=node:node .env ./
 
 COPY --chown=node:node . .
 
-EXPOSE 5555
+EXPOSE 3000
 
 RUN apk update && apk add --no-cache openssl
 

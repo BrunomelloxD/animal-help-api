@@ -9,7 +9,7 @@ export class CreateUserRequestDTO {
     maxLength: 150,
     example: 'Bruno Mello',
     description: `Nome <br>
-    <em>Nome de usuário ou nome, algo descritivo que identifique ou descreva o usuário.</em><hr>`,
+    <em>Nome de usuario ou nome, algo descritivo que identifique ou descreva o usuario.</em><hr>`,
   })
   name: string;
 
@@ -22,7 +22,7 @@ export class CreateUserRequestDTO {
     minLength: 8,
     example: 'A123@123a',
     description: `Senha <br>
-    <em>Senha para autenticação conforme a estrutura definida pelo Cerberus "password_length", "password_strength" e "required_fields"</em><hr>`,
+    <em>Senha para autenticao conforme a estrutura definida pelo Cerberus "password_length", "password_strength" e "required_fields"</em><hr>`,
   })
   password: string;
 
@@ -33,7 +33,7 @@ export class CreateUserRequestDTO {
     maxLength: 150,
     example: 'brunomello@email.com.br',
     description: `E-mail <br>
-    <em>E-mail valido para autenticação, recuperação de senha e contato, algo único.</em><hr>`,
+    <em>E-mail valido para autenticacao, recuperacao de senha e contato, algo unico.</em><hr>`,
   })
   email: string;
 }
